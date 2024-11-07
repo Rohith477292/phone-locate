@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Locator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Phone Number Locator</h1>
+        <p>Enter a phone number to find its approximate location.</p>
+
+        <input type="text" id="phoneInput" placeholder="Enter phone number (e.g., +14155552671)">
+        <button onclick="locateNumber()">Locate Number</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f3f3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+input[type="text"] {
+    padding: 10px;
+    width: 80%;
+    max-width: 300px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#result {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #333;
+}
+async function locateNumber() {
+    const phoneInput = document.getElementById('phoneInput').value;
+    const resultDiv = document.getElementById('result');
+
+    // Check if the input is not empty
+    if (phoneInput === "") {
+        resultDiv.innerHTML = "Please enter a phone number.";
+        return;
+    }
+
+    // Make the API call
+    const apiKey = 'YOUR_API_KEY_HERE'; // Replace with your actual API key
+    const url = https://api.abstractapi.com/v1/phone/?api_key=${apiKey}&phone=${phoneInput};
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Check if the API returned location data
+        if (data.valid) {
+            resultDiv.innerHTML = `
+                <strong>Location Information:</strong><br>
+                Country: ${data.country}<br>
+                Location: ${data.location}<br>
+                Carrier: ${data.carrier}<br>
+                Line Type: ${data.line_type}<br>
+            `;
+        } else {
+            resultDiv.innerHTML = "Invalid phone number. Please try again.";
+        }
+    } catch (error) {
+        resultDiv.innerHTML = "Error retrieving data. Please check your connection or API key.";
+        console.error("Error:", error);
+    }
+}
